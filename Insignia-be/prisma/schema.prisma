@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String
+  balance Float? @default(0)
+  apiToken String @unique @map("api_token")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  TransfersFrom Transfer[] @relation("FromUser")
+  TransfersTo Transfer[] @relation("ToUser")
+
+  @@map("user")
+}
+
+model Transfer {
+  id Int @id @default(autoincrement())
+  transferCode String? @map("transfer_code")
+  fromUserId Int @map("from_user_id")
+  toUserId Int @map("to_user_id")
+  amount Float
+  description String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  fromUser User @relation("FromUser", fields: [fromUserId], references: [id])
+  toUser User @relation("ToUser", fields: [toUserId], references: [id])
+
+  @@map("transfer")
+}
