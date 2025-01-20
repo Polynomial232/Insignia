@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom"
 
 export default function Transaction() {
-  const [searchParams, setSearchParams] = useSearchParams({})
+  const [searchParams, setSearchParams] = useSearchParams({
+    page: 1
+  })
 
   const [transaction, setTransaction] = useState([])
   const [transactionPagination, setTransactionPagination] = useState({})
