@@ -29,6 +29,7 @@ export default function Login() {
       if(response.data.statusCode === 200){
         // better using cookies
         localStorage.setItem('api_token', response.data.data.api_token)
+        navigate('./dashboard')
       }else{
         Swal.fire({
           title: 'Error!',

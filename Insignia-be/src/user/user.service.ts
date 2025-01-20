@@ -19,11 +19,14 @@ export class UserService {
   }
 
   async loginUser(username: string, password: string): Promise<User> {
-    return this.prisma.user.findUnique({
+    const apiToken: string = uuidv4();
+
+    return this.prisma.user.update({
       where: {
         username: String(username),
         password: String(password),
-      }
+      },
+      data: { apiToken: String(apiToken) }
     })
   }
 

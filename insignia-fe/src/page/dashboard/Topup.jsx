@@ -54,7 +54,17 @@ export default function Topup() {
             <div onClick={() => setAmount(500_000)} className={[amount === 500_000 ? "!bg-slate-800 text-white" : ""]}>Rp 500.000</div>
             <div onClick={() => setAmount(1_000_000)} className={[amount === 1_000_000 ? "!bg-slate-800 text-white" : ""]}>Rp 1.000.000</div>
           </div>
-          <input type="text" name="" id="" inputMode="numeric" className="bg-slate-200 py-3 px-3 rounded-lg text-slate-800" placeholder="Rp 10,000,000" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <input type="text" name="" id="" inputMode="numeric" className="bg-slate-200 py-3 px-3 rounded-lg text-slate-800" placeholder="Rp 10,000,000"
+            pattern="\d*"
+            value={amount}
+            onChange={
+              (e) => {
+                if(Number(e.target.value)){
+                  setAmount(e.target.value)
+                }
+              }
+            }
+          />
           <button className="bg-slate-800 w-full py-2.5 text-white rounded-lg font-bold text-lg" onClick={(e) => handleTopupBalance(e)}>Topup</button>
         </div>
       </div>

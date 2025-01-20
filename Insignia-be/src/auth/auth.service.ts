@@ -16,7 +16,7 @@ export class AuthService implements CanActivate {
             }
         })
 
-        if(!user) throw new UnauthorizedException()
+        if(!user) throw new UnauthorizedException('User token not valid')
 
         request.user = user
         return true

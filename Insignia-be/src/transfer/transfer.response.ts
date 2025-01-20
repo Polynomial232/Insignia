@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 import { Exclude, Expose } from "class-transformer";
+var moment = require('moment')
 
 @Exclude()
 export class TransferResponse {
@@ -20,9 +21,9 @@ export class TransferResponse {
     
     @Expose()
     get amount(): number {
-        // if other user transfer to me = debit (+)
-        // if I transfer to other user = credit (-)
-        return this.userId === this.toUserId ? this._amount : -this._amount;
+        // if particular user transfer to user = debit (-)
+        // if user to particular user = credit (+)
+        return this.userId === this.toUserId ? -this._amount : this._amount;
     }
 
     @Expose()
@@ -32,7 +33,8 @@ export class TransferResponse {
 
     @Expose()
     get transfer_date(): string {
-        return this.createdAt.toISOString()
+        return moment(this.createdAt).format('DD MMM YYYY, hh:mm:ss')
+        // return this.createdAt.toISOString()
     }
 
     constructor(partial: Partial<TransferResponse>) {
@@ -62,9 +64,9 @@ export class TransferTopUsersResponse {
     
     @Expose()
     get amount(): number {
-        // if other user transfer to me = debit (+)
-        // if I transfer to other user = credit (-)
-        return this.userId === this.toUserId ? this._amount : -this._amount;
+        // if particular user transfer to user = debit (-)
+        // if user to particular user = credit (+)
+        return this.userId === this.toUserId ? -this._amount : this._amount;
     }
 
     constructor(partial: Partial<TransferResponse>) {

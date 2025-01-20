@@ -9,14 +9,12 @@ export default function Transfer() {
   const [numRow, setNumRow] = useState(1)
 
   function handleTransfer(e) {
-    console.log(transferDatas)
     e.preventDefault()
 
     const data = Object.values(transferDatas).map(data => ({
       username: data.username,
       amount: Number(data.amount),
     }))
-    console.log(data)
 
     postTransfer(data)
     .then((response) => {
@@ -93,16 +91,21 @@ export default function Transfer() {
                     </td>
                     <td className="px-6 py-4">
                       <input type="text" name="amount" id="" inputMode="numeric" className="w-full bg-gray-200 py-2 px-3 rounded"
+                        pattern="\d*"
                         placeholder="Rp 100.000"
                         value={transferDatas[i]?.amount ?? ''}
                         onChange={
-                          (e) => setTransferDatas(prevState => ({
-                            ...prevState,
-                            [i]: {
-                              ...prevState[[i]],
-                              amount: e.target.value
+                          (e) => {
+                            if(Number(e.target.value)){
+                              setTransferDatas(prevState => ({
+                                ...prevState,
+                                [i]: {
+                                  ...prevState[[i]],
+                                  amount: e.target.value
+                                }
+                              }))
                             }
-                          }))
+                          }
                         }
                       />
                     </td>
@@ -110,7 +113,6 @@ export default function Transfer() {
                       <span className="text-white bg-red-600 px-2 py-1 rounded hover:cursor-pointer"
                         onClick={() => {
                           const newState = Object.entries(transferDatas).filter(([key, value]) => key != i)
-                          console.log(Object.fromEntries(newState))
                           setTransferDatas(Object.fromEntries(newState))
                         }} >
                         <FontAwesomeIcon icon={faTrashCan} />

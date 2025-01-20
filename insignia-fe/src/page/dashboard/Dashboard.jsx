@@ -1,57 +1,28 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown, faArrowUp, faMoneyBill, faWallet } from "@fortawesome/free-solid-svg-icons";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, Legend, LinearScale, LineElement, PointElement, Title, Tooltip, ArcElement } from "chart.js";
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { Bar, Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, Legend, LinearScale, LineElement, PointElement, Title, Tooltip, ArcElement, Colors, BarElement } from "chart.js";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchTopTransaction, fetchTopUsers, fetchUserBalance } from "../../services/dashboard";
-import Swal from "sweetalert2";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
+  Colors
 );
 
 export default function Dashboard() {
   const [balance, setBalance] = useState(0)
   const [topUsers, setTopUsers] = useState([])
   const [topTransaction, setTopTransaction] = useState([])
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-  };
-  
-  const labels = ['01-09','01-10','01-11','01-12','01-13','01-14','01-15','01-16','01-17','01-18','01-19'];
-  
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Debit',
-        data: labels.map(() => Math.floor(Math.random() * 1_000_000)),
-        borderColor: '#16A34A',
-        backgroundColor: '#16A34A',
-      },
-      {
-        label: 'Credit',
-        data: labels.map(() => Math.floor(Math.random() * 1_000_000)),
-        borderColor: '#B91C1C',
-        backgroundColor: '#B91C1C',
-      }
-    ],
-  };
 
   useEffect(() => {
     getUserBalance()
@@ -102,40 +73,65 @@ export default function Dashboard() {
           <div className="flex flex-col gap-6">
             <div className="text-sm text-left bg-gray-50 shadow-md sm:rounded-lg px-6 py-3">
               <div className="w-full flex md:flex-row flex-col">
-                <div className="md:w-2/3 md:h-80 h-40">
-                  <Line options={options} data={data} />
-                </div>
-                <div className="md:w-1/3 px-4">
-                  <div className="text-xl flex items-center gap-3 px-3 py-4 border-b">
-                    <div className="bg-green-600 text-white py-3 px-2.5 rounded-md flex justify-center items-center"> 
-                      <FontAwesomeIcon icon={faWallet} />
-                    </div>
-                    <div className="w-full">
-                      <div className="flex justify-between items-center">
-                        <span>Debit</span>
-                        <span>Rp 24,000,000</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm text-slate-500">
-                        <span>Yesterday</span>
-                        <span>24</span>
-                      </div>
-                    </div>
+                <div className="w-full md:h-80 py-3 flex md:flex-row flex-col gap-3">
+                  <div className="md:w-1/3 md:!h-auto h-80">
+                    <Doughnut
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          colors: {
+                            enabled: true,
+                            forceOverride: true
+                          },
+                          legend: {
+                            position: 'top',
+                          },
+                          title: {
+                            display: true,
+                            text: 'Top 10 Users Debit'
+                          }
+                        },
+                      }}
+                      data={{
+                        labels: topUsers.map(user => user.username),
+                        datasets: [
+                          {
+                            label: 'Debit',
+                            data: topUsers.map(user => user.amount),
+                            borderWidth: 1,
+                          },
+                        ],
+                      }} />
                   </div>
-
-                  <div className="text-xl flex items-center gap-3 px-3 py-4 border-b">
-                    <div className="bg-red-700 text-white py-3 px-2.5 rounded-md flex justify-center items-center"> 
-                      <FontAwesomeIcon icon={faMoneyBill} />
-                    </div>
-                    <div className="w-full">
-                      <div className="flex justify-between items-center">
-                        <span>Credit</span>
-                        <span>Rp 24,000,000</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm text-slate-500">
-                        <span>Yesterday</span>
-                        <span>24</span>
-                      </div>
-                    </div>
+                  <div className="md:w-2/3 md:!h-auto h-80">
+                    <Bar
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          colors: {
+                            enabled: true,
+                            forceOverride: true
+                          },
+                          legend: {
+                            position: 'top',
+                          },
+                          title: {
+                            display: true,
+                            text: 'Top 10 Transaction User'
+                          }
+                        },
+                      }}
+                      data={{
+                        labels: topTransaction.map(transaction => transaction.username),
+                        datasets: [
+                          {
+                            label: 'Amount',
+                            data: topTransaction.map(transaction => transaction.amount),
+                          },
+                        ],
+                      }} />
                   </div>
                 </div>
               </div>

@@ -8,3 +8,9 @@ export class CreateTransfer {
 
   description: string | null;
 }
+
+export class TransactionDto {
+  page: number;
+  transaction_code: string | null;
+  username: string | null;
+}
