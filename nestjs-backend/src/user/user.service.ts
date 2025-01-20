@@ -2,6 +2,9 @@ import { PrismaService } from "src/prisma.service";
 import { User } from "./user.model"
 import { Injectable } from "@nestjs/common";
 import { v4 as uuidv4 } from "uuid";
+import * as bcrypt from 'bcrypt';
+import { UserLogin } from "./user.dto";
+
 
 @Injectable()
 export class UserService {
@@ -10,22 +13,23 @@ export class UserService {
   async registerUser(data: User): Promise<User> {
     const apiToken: string = uuidv4();
 
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(data.password, saltOrRounds);
+
     return this.prisma.user.create({
       data: {
         ...data,
+        password: String(hash),
         apiToken: String(apiToken)
       },
     })
   }
 
-  async loginUser(username: string, password: string): Promise<User> {
+  async loginUser(data: UserLogin): Promise<User> {
     const apiToken: string = uuidv4();
 
     return this.prisma.user.update({
-      where: {
-        username: String(username),
-        password: String(password),
-      },
+      where: { username: String(data.username) },
       data: { apiToken: String(apiToken) }
     })
   }

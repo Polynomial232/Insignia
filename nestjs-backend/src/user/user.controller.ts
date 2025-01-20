@@ -55,7 +55,7 @@ export class UserController {
 
             if(!validate.status) return apiResponse(validate.statusCode, validate.message)
 
-            const user: User = await this.userService.loginUser(postData.username, postData.password)
+            const user: User = await this.userService.loginUser(postData)
     
             const data: UserApiTokenResponse = new UserApiTokenResponse(user)
             return apiResponse(HttpStatus.OK, 'success login user', data)

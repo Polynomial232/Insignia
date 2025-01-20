@@ -3,6 +3,7 @@ import { User } from "./user.model"
 import { Injectable } from "@nestjs/common";
 import { Validator } from "src/common/common.response";
 import { UserLogin } from "./user.dto";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserValidator {
@@ -29,14 +30,21 @@ export class UserValidator {
   }
 
   async loginUserValidator(data: UserLogin): Promise<Validator> {
-    const validateLogin: User = await this.prisma.user.findUnique({
-      where: {
-        username: String(data.username),
-        password: String(data.password)
-      }
+    const user: User = await this.prisma.user.findUnique({
+      where: { username: String(data.username) }
     })
+  
+    if(!user){
+      return {
+        status: false,
+        statusCode: 404,
+        message: 'Login Failed Please Check'
+      }
+    }
 
-    if(!validateLogin){
+    const isMatch: boolean = await bcrypt.compare(data.password, user.password)
+
+    if(!isMatch){
       return {
         status: false,
         statusCode: 404,
